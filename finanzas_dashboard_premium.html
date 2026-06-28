@@ -1,0 +1,413 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0d0f;--bg2:#16161a;--bg3:#1e1e24;--bg4:#26262e;
+  --accent:#7c6ef7;--accent2:#a78bfa;--accent3:#c4b5fd;
+  --green:#22c55e;--red:#ef4444;--amber:#f59e0b;--teal:#2dd4bf;
+  --txt:#f4f4f5;--txt2:#a1a1aa;--txt3:#71717a;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --r:12px;--r2:8px;
+}
+body{background:var(--bg);color:var(--txt);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.5;padding:0}
+.app{min-height:100vh;display:flex;flex-direction:column}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--bg);border-bottom:0.5px solid var(--border);position:sticky;top:0;z-index:10}
+.logo{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:600;letter-spacing:-0.3px}
+.logo-dot{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#7c6ef7,#a78bfa);display:flex;align-items:center;justify-content:center}
+.logo-dot i{font-size:15px;color:#fff}
+.topbar-actions{display:flex;align-items:center;gap:12px}
+.avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#7c6ef7,#2dd4bf);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff;cursor:pointer}
+.topbar-btn{width:32px;height:32px;border-radius:50%;background:var(--bg3);border:0.5px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--txt2)}
+.topbar-btn:hover{background:var(--bg4);color:var(--txt)}
+.badge{background:var(--accent);color:#fff;font-size:9px;font-weight:700;padding:2px 5px;border-radius:10px;position:absolute;top:-4px;right:-4px}
+.rel{position:relative}
+.main{display:flex;flex:1}
+.sidebar{width:220px;background:var(--bg);border-right:0.5px solid var(--border);padding:16px 0;flex-shrink:0}
+.nav-section{padding:0 12px;margin-bottom:20px}
+.nav-label{font-size:10px;color:var(--txt3);text-transform:uppercase;letter-spacing:0.8px;padding:0 8px;margin-bottom:8px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--r2);cursor:pointer;color:var(--txt2);font-size:13px;margin-bottom:2px;transition:all 0.15s}
+.nav-item:hover{background:var(--bg3);color:var(--txt)}
+.nav-item.active{background:rgba(124,110,247,0.15);color:var(--accent2)}
+.nav-item i{font-size:17px;width:20px;text-align:center}
+.nav-badge{margin-left:auto;background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px}
+.content{flex:1;padding:20px;overflow-y:auto;background:var(--bg)}
+.greeting{margin-bottom:20px}
+.greeting h1{font-size:20px;font-weight:600;letter-spacing:-0.3px;color:var(--txt)}
+.greeting p{color:var(--txt2);font-size:13px;margin-top:2px}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.kpi{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--r);padding:16px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.kpi.purple::before{background:var(--accent)}
+.kpi.green::before{background:var(--green)}
+.kpi.red::before{background:var(--red)}
+.kpi.teal::before{background:var(--teal)}
+.kpi.amber::before{background:var(--amber)}
+.kpi-label{font-size:11px;color:var(--txt3);text-transform:uppercase;letter-spacing:0.5px;display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.kpi-label i{font-size:13px}
+.kpi-value{font-size:22px;font-weight:700;letter-spacing:-0.5px;color:var(--txt)}
+.kpi-sub{font-size:12px;margin-top:4px;display:flex;align-items:center;gap:4px}
+.kpi-sub.up{color:var(--green)}
+.kpi-sub.down{color:var(--red)}
+.kpi-sub.neutral{color:var(--txt3)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.row3{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:20px}
+.card{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--r);padding:20px}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.card-title{font-size:14px;font-weight:600;color:var(--txt)}
+.card-action{font-size:12px;color:var(--accent2);cursor:pointer}
+.card-action:hover{color:var(--accent3)}
+canvas{display:block}
+.tx-list{display:flex;flex-direction:column;gap:2px}
+.tx{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:var(--r2);cursor:pointer}
+.tx:hover{background:var(--bg3)}
+.tx-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px}
+.tx-info{flex:1;min-width:0}
+.tx-name{font-size:13px;font-weight:500;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tx-cat{font-size:11px;color:var(--txt3);margin-top:1px}
+.tx-amount{font-size:13px;font-weight:600;flex-shrink:0}
+.tx-amount.neg{color:var(--red)}
+.tx-amount.pos{color:var(--green)}
+.tx-date{font-size:10px;color:var(--txt3);text-align:right;margin-top:1px}
+.budget-list{display:flex;flex-direction:column;gap:14px}
+.budget-item{}
+.budget-header{display:flex;justify-content:space-between;margin-bottom:6px}
+.budget-name{font-size:13px;color:var(--txt);font-weight:500;display:flex;align-items:center;gap:6px}
+.budget-name i{font-size:14px}
+.budget-amounts{font-size:12px;color:var(--txt3)}
+.budget-bar{height:6px;background:var(--bg4);border-radius:10px;overflow:hidden}
+.budget-fill{height:100%;border-radius:10px;transition:width 0.6s}
+.subs-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sub-item{background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--r2);padding:12px;display:flex;align-items:center;gap:10px}
+.sub-logo{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
+.sub-info{flex:1;min-width:0}
+.sub-name{font-size:12px;font-weight:600;color:var(--txt)}
+.sub-price{font-size:11px;color:var(--txt3)}
+.sub-next{font-size:10px;color:var(--txt3);margin-top:2px}
+.goals-list{display:flex;flex-direction:column;gap:14px}
+.goal-item{}
+.goal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.goal-name{font-size:13px;font-weight:500;color:var(--txt)}
+.goal-pct{font-size:12px;color:var(--accent2);font-weight:600}
+.goal-bar{height:8px;background:var(--bg4);border-radius:10px;overflow:hidden;margin-bottom:4px}
+.goal-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,#7c6ef7,#a78bfa)}
+.goal-sub{display:flex;justify-content:space-between;font-size:11px;color:var(--txt3)}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:500}
+.chip.up{background:rgba(34,197,94,0.15);color:var(--green)}
+.chip.down{background:rgba(239,68,68,0.15);color:var(--red)}
+.quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px}
+.qa{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--r);padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;transition:all 0.15s}
+.qa:hover{background:var(--bg3);border-color:var(--border2);transform:translateY(-1px)}
+.qa-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.qa span{font-size:11px;color:var(--txt2);text-align:center}
+.period-tabs{display:flex;gap:4px;background:var(--bg3);padding:3px;border-radius:var(--r2)}
+.ptab{padding:4px 10px;border-radius:6px;font-size:11px;color:var(--txt3);cursor:pointer;transition:all 0.15s}
+.ptab.active{background:var(--bg4);color:var(--txt);font-weight:500}
+</style>
+
+<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Dashboard principal de finanzas personales con saldo, gráficos, transacciones y presupuestos</h2>
+
+<div class="app">
+  <div class="topbar">
+    <div class="logo">
+      <div class="logo-dot"><i class="ti ti-currency-dollar" aria-hidden="true"></i></div>
+      Finanzas
+    </div>
+    <div class="topbar-actions">
+      <div class="rel">
+        <div class="topbar-btn"><i class="ti ti-search" aria-hidden="true"></i></div>
+      </div>
+      <div class="rel">
+        <div class="topbar-btn"><i class="ti ti-bell" aria-hidden="true"></i></div>
+        <span class="badge">3</span>
+      </div>
+      <div class="avatar">MG</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <aside class="sidebar">
+      <div class="nav-section">
+        <div class="nav-label">Principal</div>
+        <div class="nav-item active"><i class="ti ti-layout-dashboard" aria-hidden="true"></i> Dashboard</div>
+        <div class="nav-item"><i class="ti ti-arrows-exchange" aria-hidden="true"></i> Transacciones</div>
+        <div class="nav-item"><i class="ti ti-chart-pie" aria-hidden="true"></i> Presupuestos</div>
+        <div class="nav-item"><i class="ti ti-chart-line" aria-hidden="true"></i> Inversiones</div>
+        <div class="nav-item"><i class="ti ti-target" aria-hidden="true"></i> Metas <span class="nav-badge">2</span></div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">Herramientas</div>
+        <div class="nav-item"><i class="ti ti-receipt" aria-hidden="true"></i> Suscripciones</div>
+        <div class="nav-item"><i class="ti ti-users" aria-hidden="true"></i> Gastos compartidos</div>
+        <div class="nav-item"><i class="ti ti-calendar" aria-hidden="true"></i> Calendario</div>
+        <div class="nav-item"><i class="ti ti-calculator" aria-hidden="true"></i> Calculadoras</div>
+        <div class="nav-item"><i class="ti ti-file-analytics" aria-hidden="true"></i> Reportes</div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">Cuenta</div>
+        <div class="nav-item"><i class="ti ti-robot" aria-hidden="true"></i> Asistente IA</div>
+        <div class="nav-item"><i class="ti ti-settings" aria-hidden="true"></i> Configuración</div>
+      </div>
+    </aside>
+
+    <div class="content">
+      <div class="greeting">
+        <h1>Buen día, Martín 👋</h1>
+        <p>Resumen financiero · Junio 2026</p>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi purple">
+          <div class="kpi-label"><i class="ti ti-wallet" aria-hidden="true"></i> Saldo total</div>
+          <div class="kpi-value">$847.320</div>
+          <div class="kpi-sub up"><i class="ti ti-trending-up" aria-hidden="true" style="font-size:12px"></i> +8,4% vs mes anterior</div>
+        </div>
+        <div class="kpi green">
+          <div class="kpi-label"><i class="ti ti-arrow-bar-to-down" aria-hidden="true"></i> Ingresos del mes</div>
+          <div class="kpi-value">$195.000</div>
+          <div class="kpi-sub up"><i class="ti ti-trending-up" aria-hidden="true" style="font-size:12px"></i> Sueldo + freelance</div>
+        </div>
+        <div class="kpi red">
+          <div class="kpi-label"><i class="ti ti-arrow-bar-to-up" aria-hidden="true"></i> Gastos del mes</div>
+          <div class="kpi-value">$87.430</div>
+          <div class="kpi-sub down"><i class="ti ti-trending-up" aria-hidden="true" style="font-size:12px"></i> +12% vs mayo</div>
+        </div>
+        <div class="kpi teal">
+          <div class="kpi-label"><i class="ti ti-piggy-bank" aria-hidden="true"></i> Ahorro acumulado</div>
+          <div class="kpi-value">$312.500</div>
+          <div class="kpi-sub up"><i class="ti ti-trending-up" aria-hidden="true" style="font-size:12px"></i> Meta: 44,6%</div>
+        </div>
+        <div class="kpi amber">
+          <div class="kpi-label"><i class="ti ti-chart-candle" aria-hidden="true"></i> Inversiones</div>
+          <div class="kpi-value">$248.700</div>
+          <div class="kpi-sub up"><i class="ti ti-trending-up" aria-hidden="true" style="font-size:12px"></i> +3,2% este mes</div>
+        </div>
+        <div class="kpi purple" style="border-top-color:var(--txt3)">
+          <div class="kpi-label"><i class="ti ti-device-tv" aria-hidden="true"></i> Suscripciones</div>
+          <div class="kpi-value">$8.940</div>
+          <div class="kpi-sub neutral">7 servicios activos · por mes</div>
+        </div>
+      </div>
+
+      <div class="quick-actions">
+        <div class="qa">
+          <div class="qa-icon" style="background:rgba(124,110,247,0.15)"><i class="ti ti-plus" style="color:var(--accent2);font-size:18px" aria-hidden="true"></i></div>
+          <span>Nuevo gasto</span>
+        </div>
+        <div class="qa">
+          <div class="qa-icon" style="background:rgba(34,197,94,0.15)"><i class="ti ti-arrow-bar-to-down" style="color:var(--green);font-size:18px" aria-hidden="true"></i></div>
+          <span>Nuevo ingreso</span>
+        </div>
+        <div class="qa">
+          <div class="qa-icon" style="background:rgba(245,158,11,0.15)"><i class="ti ti-transfer" style="color:var(--amber);font-size:18px" aria-hidden="true"></i></div>
+          <span>Transferir</span>
+        </div>
+        <div class="qa">
+          <div class="qa-icon" style="background:rgba(45,212,191,0.15)"><i class="ti ti-scan" style="color:var(--teal);font-size:18px" aria-hidden="true"></i></div>
+          <span>Escanear ticket</span>
+        </div>
+      </div>
+
+      <div class="row3">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Flujo de dinero — 2026</span>
+            <div class="period-tabs">
+              <div class="ptab">Sem</div>
+              <div class="ptab active">Mes</div>
+              <div class="ptab">Año</div>
+            </div>
+          </div>
+          <div style="position:relative;height:200px">
+            <canvas id="flowChart" role="img" aria-label="Gráfico de barras mostrando ingresos y gastos mensuales de enero a junio 2026">Ingresos y gastos de enero a junio 2026.</canvas>
+          </div>
+          <div style="display:flex;gap:16px;margin-top:12px;font-size:12px;color:var(--txt3)">
+            <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#7c6ef7;display:inline-block"></span>Ingresos</span>
+            <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#ef4444;display:inline-block"></span>Gastos</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Gastos por categoría</span>
+            <span class="card-action">Ver todo</span>
+          </div>
+          <div style="position:relative;height:160px;margin-bottom:12px">
+            <canvas id="catChart" role="img" aria-label="Gráfico de dona mostrando distribución de gastos por categoría">Distribución de gastos: Alimentos 28%, Transporte 18%, Servicios 16%, Ocio 14%, Salud 10%, Otros 14%.</canvas>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;justify-content:space-between;font-size:12px"><span style="display:flex;align-items:center;gap:5px;color:var(--txt2)"><span style="width:8px;height:8px;border-radius:50%;background:#7c6ef7;display:inline-block"></span>Alimentos</span><span style="color:var(--txt);font-weight:500">28%</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:12px"><span style="display:flex;align-items:center;gap:5px;color:var(--txt2)"><span style="width:8px;height:8px;border-radius:50%;background:#2dd4bf;display:inline-block"></span>Transporte</span><span style="color:var(--txt);font-weight:500">18%</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:12px"><span style="display:flex;align-items:center;gap:5px;color:var(--txt2)"><span style="width:8px;height:8px;border-radius:50%;background:#f59e0b;display:inline-block"></span>Servicios</span><span style="color:var(--txt);font-weight:500">16%</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:12px"><span style="display:flex;align-items:center;gap:5px;color:var(--txt2)"><span style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block"></span>Ocio</span><span style="color:var(--txt);font-weight:500">14%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Últimas transacciones</span>
+            <span class="card-action">Ver todas</span>
+          </div>
+          <div class="tx-list">
+            <div class="tx">
+              <div class="tx-icon" style="background:rgba(239,68,68,0.15)"><i class="ti ti-shopping-cart" style="color:#ef4444" aria-hidden="true"></i></div>
+              <div class="tx-info"><div class="tx-name">Mercado Libre</div><div class="tx-cat">Compras · Tarjeta Visa</div></div>
+              <div><div class="tx-amount neg">-$12.400</div><div class="tx-date">Hoy 14:32</div></div>
+            </div>
+            <div class="tx">
+              <div class="tx-icon" style="background:rgba(34,197,94,0.15)"><i class="ti ti-building-bank" style="color:#22c55e" aria-hidden="true"></i></div>
+              <div class="tx-info"><div class="tx-name">Sueldo junio</div><div class="tx-cat">Ingreso · Banco Nación</div></div>
+              <div><div class="tx-amount pos">+$175.000</div><div class="tx-date">Hoy 09:00</div></div>
+            </div>
+            <div class="tx">
+              <div class="tx-icon" style="background:rgba(245,158,11,0.15)"><i class="ti ti-gas-station" style="color:#f59e0b" aria-hidden="true"></i></div>
+              <div class="tx-info"><div class="tx-name">YPF Combustible</div><div class="tx-cat">Transporte · Efectivo</div></div>
+              <div><div class="tx-amount neg">-$8.200</div><div class="tx-date">Ayer 18:15</div></div>
+            </div>
+            <div class="tx">
+              <div class="tx-icon" style="background:rgba(124,110,247,0.15)"><i class="ti ti-device-tv" style="color:#a78bfa" aria-hidden="true"></i></div>
+              <div class="tx-info"><div class="tx-name">Netflix</div><div class="tx-cat">Suscripción · Débito automático</div></div>
+              <div><div class="tx-amount neg">-$3.990</div><div class="tx-date">25 jun</div></div>
+            </div>
+            <div class="tx">
+              <div class="tx-icon" style="background:rgba(45,212,191,0.15)"><i class="ti ti-salad" style="color:#2dd4bf" aria-hidden="true"></i></div>
+              <div class="tx-info"><div class="tx-name">Supermercado DIA</div><div class="tx-cat">Alimentos · Tarjeta Mastercard</div></div>
+              <div><div class="tx-amount neg">-$15.870</div><div class="tx-date">24 jun</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Presupuestos junio</span>
+              <span class="card-action">Editar</span>
+            </div>
+            <div class="budget-list">
+              <div class="budget-item">
+                <div class="budget-header">
+                  <div class="budget-name"><i class="ti ti-salad" aria-hidden="true" style="color:#22c55e"></i>Alimentos</div>
+                  <div class="budget-amounts">$24.400 / $30.000</div>
+                </div>
+                <div class="budget-bar"><div class="budget-fill" style="width:81%;background:#22c55e"></div></div>
+              </div>
+              <div class="budget-item">
+                <div class="budget-header">
+                  <div class="budget-name"><i class="ti ti-car" aria-hidden="true" style="color:#f59e0b"></i>Transporte</div>
+                  <div class="budget-amounts">$18.200 / $20.000</div>
+                </div>
+                <div class="budget-bar"><div class="budget-fill" style="width:91%;background:#f59e0b"></div></div>
+              </div>
+              <div class="budget-item">
+                <div class="budget-header">
+                  <div class="budget-name"><i class="ti ti-device-gamepad" aria-hidden="true" style="color:#ef4444"></i>Ocio</div>
+                  <div class="budget-amounts" style="color:#ef4444">$13.800 / $12.000 ⚠</div>
+                </div>
+                <div class="budget-bar"><div class="budget-fill" style="width:100%;background:#ef4444"></div></div>
+              </div>
+              <div class="budget-item">
+                <div class="budget-header">
+                  <div class="budget-name"><i class="ti ti-heart" aria-hidden="true" style="color:#a78bfa"></i>Salud</div>
+                  <div class="budget-amounts">$6.500 / $15.000</div>
+                </div>
+                <div class="budget-bar"><div class="budget-fill" style="width:43%;background:#a78bfa"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Metas de ahorro</span>
+              <span class="card-action">+ Nueva</span>
+            </div>
+            <div class="goals-list">
+              <div class="goal-item">
+                <div class="goal-header">
+                  <div class="goal-name">✈ Viaje a Europa</div>
+                  <div class="goal-pct">68%</div>
+                </div>
+                <div class="goal-bar"><div class="goal-fill" style="width:68%"></div></div>
+                <div class="goal-sub"><span>$136.000 ahorrados</span><span>Meta: $200.000</span></div>
+              </div>
+              <div class="goal-item">
+                <div class="goal-header">
+                  <div class="goal-name">💻 MacBook Pro</div>
+                  <div class="goal-pct">44%</div>
+                </div>
+                <div class="goal-bar"><div class="goal-fill" style="width:44%"></div></div>
+                <div class="goal-sub"><span>$79.200 ahorrados</span><span>Meta: $180.000</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:0">
+        <div class="card-header">
+          <span class="card-title">Suscripciones activas</span>
+          <span class="card-action">Gestionar</span>
+        </div>
+        <div class="subs-grid">
+          <div class="sub-item">
+            <div class="sub-logo" style="background:#e50914"><span style="color:#fff;font-size:11px">N</span></div>
+            <div class="sub-info"><div class="sub-name">Netflix</div><div class="sub-price">$3.990/mes</div><div class="sub-next">Próximo cobro: 25 jul</div></div>
+          </div>
+          <div class="sub-item">
+            <div class="sub-logo" style="background:#1db954"><span style="color:#fff;font-size:11px">S</span></div>
+            <div class="sub-info"><div class="sub-name">Spotify</div><div class="sub-price">$1.990/mes</div><div class="sub-next">Próximo cobro: 1 jul</div></div>
+          </div>
+          <div class="sub-item">
+            <div class="sub-logo" style="background:#113ccf"><span style="color:#fff;font-size:11px">D+</span></div>
+            <div class="sub-info"><div class="sub-name">Disney+</div><div class="sub-price">$1.890/mes</div><div class="sub-next">Próximo cobro: 8 jul</div></div>
+          </div>
+          <div class="sub-item">
+            <div class="sub-logo" style="background:#7c6ef7"><span style="color:#fff;font-size:10px">AI</span></div>
+            <div class="sub-info"><div class="sub-name">ChatGPT Plus</div><div class="sub-price">$5.800/mes</div><div class="sub-next">Próximo cobro: 15 jul</div></div>
+          </div>
+        </div>
+        <div style="margin-top:14px;padding:10px 12px;background:var(--bg3);border-radius:var(--r2);display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:13px;color:var(--txt2)">Total anual en suscripciones</span>
+          <span style="font-size:15px;font-weight:700;color:var(--amber)">$107.280 / año</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const gridColor='rgba(255,255,255,0.05)';
+const tickColor='#71717a';
+
+new Chart(document.getElementById('flowChart'),{
+  type:'bar',
+  data:{
+    labels:['Ene','Feb','Mar','Abr','May','Jun'],
+    datasets:[
+      {label:'Ingresos',data:[185000,185000,195000,185000,190000,195000],backgroundColor:'rgba(124,110,247,0.7)',borderRadius:4,borderSkipped:false},
+      {label:'Gastos',data:[72000,68000,80000,75000,78000,87430],backgroundColor:'rgba(239,68,68,0.65)',borderRadius:4,borderSkipped:false}
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{backgroundColor:'#16161a',borderColor:'rgba(255,255,255,0.1)',borderWidth:1,titleColor:'#f4f4f5',bodyColor:'#a1a1aa',callbacks:{label:c=>' $'+c.raw.toLocaleString('es-AR')}}},
+    scales:{
+      x:{ticks:{color:tickColor,font:{size:11}},grid:{color:gridColor},border:{display:false}},
+      y:{ticks:{color:tickColor,font:{size:11},callback:v=>'$'+Math.round(v/1000)+'k'},grid:{color:gridColor},border:{display:false}}
+    }
+  }
+});
+
+new Chart(document.getElementById('catChart'),{
+  type:'doughnut',
+  data:{
+    labels:['Alimentos','Transporte','Servicios','Ocio','Salud','Otros'],
+    datasets:[{data:[28,18,16,14,10,14],backgroundColor:['#7c6ef7','#2dd4bf','#f59e0b','#22c55e','#ef4444','#71717a'],borderWidth:0,hoverOffset:4}]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,cutout:'70%',
+    plugins:{legend:{display:false},tooltip:{backgroundColor:'#16161a',borderColor:'rgba(255,255,255,0.1)',borderWidth:1,titleColor:'#f4f4f5',bodyColor:'#a1a1aa',callbacks:{label:c=>c.label+': '+c.raw+'%'}}}
+  }
+});
+</script>
